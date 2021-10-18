@@ -3,7 +3,7 @@ import 'package:todo_flutter_uwp/model/todo_list.dart';
 
 class TodoRepository {
   // @MOCKING
-  List<Todo> todos1 = List.generate(10, (i) {
+  List<Todo> todos1 = List.generate(100, (i) {
     return Todo(
       id: i,
       title: 'Todo $i',
@@ -11,7 +11,7 @@ class TodoRepository {
     );
   });
 
-  List<Todo> todos2 = List.generate(10, (i) {
+  List<Todo> todos2 = List.generate(100, (i) {
     return Todo(
       id: i,
       title: 'Todo $i',
@@ -40,9 +40,12 @@ class TodoRepository {
 
   Future<List<TodoList>> reorderItems(int oldListIndex, int newListIndex,
       int oldItemIndex, int newItemIndex) async {
+    print(
+        'Reordering list $oldListIndex:$newListIndex.\n\tOld Position $oldItemIndex\n\tNewPosition $newItemIndex');
     TodoList todoList = todoLists[oldListIndex];
+    Todo item = todoList.todos[oldItemIndex];
     todoList.todos.removeAt(oldItemIndex);
-    todoList.todos.insert(newItemIndex, todoList.todos[oldItemIndex]);
+    todoList.todos.insert(newItemIndex, item);
     return todoLists;
   }
 }

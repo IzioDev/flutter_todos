@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+// @TODO: try to find a way to display a headColor on the top card
+//        that don't need too much hack
+//        either make this works or find a better way
 import 'package:morphable_shape/morphable_shape.dart';
 import 'package:todo_flutter_uwp/bloc/todos_bloc.dart';
 import 'package:todo_flutter_uwp/colors.dart';
@@ -22,9 +25,11 @@ class TodosList extends StatefulWidget {
   final String title;
   final Color headColor;
   final List<Todo> todos;
+  final int index;
 
   const TodosList(
       {Key? key,
+      required this.index,
       required this.title,
       required this.todos,
       required this.headColor})
@@ -35,17 +40,10 @@ class TodosList extends StatefulWidget {
 }
 
 class _TodosListState extends State<TodosList> {
-  List<Widget> TodoCardList(List<Todo> todos) {
-    final todoCardList = <Widget>[];
-
-    for (var i = 0; i < todos.length; i++) {
-      todoCardList.add(TodoCard(key: ValueKey(todos[i].id)));
-    }
-    return todoCardList;
-  }
-
   @override
   Widget build(BuildContext context) {
+    final todosBloc = BlocProvider.of<TodosBloc>(context);
+
     return Container(
       width: MediaQuery.of(context).size.width / 5,
       margin: EdgeInsets.all(10),
@@ -73,17 +71,34 @@ class _TodosListState extends State<TodosList> {
             ),
           ),
           Container(
-              height: MediaQuery.of(context).size.height - 187,
-              child: ReorderableListView(
-                scrollDirection: Axis.vertical,
-                // onReorder: (int oldIndex, int newIndex) {
-                //   BlocProvider.of<TodosBloc>(context).add(
-                //     TodosReorder(oldIndex: oldIndex, newIndex: newIndex),
-                //   );
-                // },
-                onReorder: (int oldIndex, int newIndex) {},
-                children: TodoCardList(widget.todos),
-              ))
+            height: MediaQuery.of(context).size.height - 187,
+            // @TODO: swap to ReorderableSilverList
+            // https://api.flutter.dev/flutter/widgets/SliverReorderableList-class.html
+            child: ReorderableList(
+                primary: false,
+                itemBuilder: (context, index) => TodoCard(
+                      key: ValueKey(widget.todos[index].id),
+                      index: index,
+                      title: widget.todos[index].title,
+                    ),
+                itemCount: widget.todos.length,
+                onReorder: (oldItemIndex, newItemIndex) {
+                  if (oldItemIndex == newItemIndex) {
+                    return;
+                  }
+
+                  // These two lines are workarounds for onReorder behaviour
+                  // Thanks to https://stackoverflow.com/a/54164333
+                  if (newItemIndex > widget.todos.length) {
+                    newItemIndex = widget.todos.length;
+                  }
+                  if (oldItemIndex < newItemIndex) newItemIndex--;
+
+                  todosBloc.add(TodosItemReordered(
+                      oldItemIndex, newItemIndex, widget.index, widget.index));
+                }),
+            alignment: Alignment.topLeft,
+          )
         ],
       ),
     );

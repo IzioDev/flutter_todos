@@ -14,13 +14,17 @@ class WorkingZone extends StatefulWidget {
 
 class _WorkingZoneState extends State<WorkingZone> {
   List<Widget> buildTodoLists(List<TodoList> todoLists) {
+    var index = -1;
     return todoLists.map((todoList) {
+      index++;
+
       final todos = todoList.todos;
       final category = todoList.category;
       return TodosList(
         title: category,
         todos: todos,
         headColor: Colors.red,
+        index: index,
       );
     }).toList();
   }
