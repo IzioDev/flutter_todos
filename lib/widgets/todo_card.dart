@@ -1,5 +1,7 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:todo_flutter_uwp/colors.dart';
+import 'package:todo_flutter_uwp/widgets/todo_reordable_list.dart';
 
 class TodoCard extends StatefulWidget {
   final int index;
@@ -13,13 +15,25 @@ class TodoCard extends StatefulWidget {
 }
 
 class _TodoCardState extends State<TodoCard> {
+  @protected
+  MultiDragGestureRecognizer createRecognizer() {
+    return ImmediateMultiDragGestureRecognizer(debugOwner: this);
+  }
+
   @override
   Widget build(BuildContext context) {
     return ConstrainedBox(
-        constraints:
-            const BoxConstraints(minWidth: double.infinity, minHeight: 50),
-        child: ReorderableDragStartListener(
-          index: widget.index,
+        constraints: const BoxConstraints(minWidth: double.infinity),
+        child: Listener(
+          onPointerDown: (PointerDownEvent event) {
+            final TodoReorderableListState? list =
+                TodoReorderableList.maybeOf(context);
+            list?.startItemDragReorder(
+              index: widget.index,
+              event: event,
+              recognizer: createRecognizer(),
+            );
+          },
           child: Card(
             margin: const EdgeInsets.only(top: 10),
             shadowColor: Colors.black,

@@ -38,6 +38,13 @@ class TodosBloc extends Bloc<TodosEvent, TodosState> {
             event.newItemIndex);
         emit(TodosInitial(newTodoLists));
       }
+
+      if (event is TodosReloadRequested) {
+        print("get todos again");
+
+        final todoLists = await todoRepository.getTodos();
+        emit(TodosInitial(todoLists));
+      }
     });
   }
 }

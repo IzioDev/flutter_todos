@@ -4,10 +4,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 //        that don't need too much hack
 //        either make this works or find a better way
 import 'package:morphable_shape/morphable_shape.dart';
+import 'package:todo_flutter_uwp/bloc/todo_mutation_bloc.dart';
 import 'package:todo_flutter_uwp/bloc/todos_bloc.dart';
 import 'package:todo_flutter_uwp/colors.dart';
+import 'package:todo_flutter_uwp/enum/mutations.dart';
 import 'package:todo_flutter_uwp/model/todo.dart';
 import 'package:todo_flutter_uwp/widgets/todo_card.dart';
+import 'package:todo_flutter_uwp/widgets/todo_card_editable.dart';
+import 'package:todo_flutter_uwp/widgets/todo_reordable_list.dart';
 
 // var border = DynamicBorderSide(
 //   width: 10,
@@ -40,9 +44,18 @@ class TodosList extends StatefulWidget {
 }
 
 class _TodosListState extends State<TodosList> {
+  Widget buildTodoEditionCard(bool isEditing) {
+    if (isEditing) {
+      return TodoCardEditable();
+    }
+
+    return Container();
+  }
+
   @override
   Widget build(BuildContext context) {
     final todosBloc = BlocProvider.of<TodosBloc>(context);
+    final todoMutationBloc = BlocProvider.of<TodoMutationBloc>(context);
 
     return Container(
       width: MediaQuery.of(context).size.width / 5,
@@ -62,42 +75,69 @@ class _TodosListState extends State<TodosList> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            widget.title,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.w500,
-            ),
+          // Header
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                widget.title,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              IconButton(
+                icon: Icon(
+                  Icons.post_add_rounded,
+                  color: Colors.green,
+                ),
+                onPressed: () {
+                  todoMutationBloc
+                      .add(TodoMutationInitiated(mutation: Mutation.insert));
+                },
+              )
+            ],
           ),
-          Container(
-            height: MediaQuery.of(context).size.height - 187,
-            // @TODO: swap to ReorderableSilverList
-            // https://api.flutter.dev/flutter/widgets/SliverReorderableList-class.html
-            child: ReorderableList(
-                primary: false,
-                itemBuilder: (context, index) => TodoCard(
-                      key: ValueKey(widget.todos[index].id),
-                      index: index,
-                      title: widget.todos[index].title,
-                    ),
-                itemCount: widget.todos.length,
-                onReorder: (oldItemIndex, newItemIndex) {
-                  if (oldItemIndex == newItemIndex) {
-                    return;
-                  }
+          // Todo Card Edit
+          BlocBuilder<TodoMutationBloc, TodoMutationState>(
+            builder: (context, state) {
+              final isEditing = todoMutationBloc.isEditing();
 
-                  // These two lines are workarounds for onReorder behaviour
-                  // Thanks to https://stackoverflow.com/a/54164333
-                  if (newItemIndex > widget.todos.length) {
-                    newItemIndex = widget.todos.length;
-                  }
-                  if (oldItemIndex < newItemIndex) newItemIndex--;
+              return buildTodoEditionCard(isEditing);
+            },
+          ),
+          Expanded(
+            child: Container(
+              // @TODO: swap to ReorderableSilverList
+              // https://api.flutter.dev/flutter/widgets/SliverReorderableList-class.html
+              child: TodoReorderableList(
+                  freeDrag: true,
+                  primary: false,
+                  itemBuilder: (context, index) => TodoCard(
+                        key: ValueKey(widget.todos[index].id),
+                        index: index,
+                        title: widget.todos[index].title,
+                      ),
+                  itemCount: widget.todos.length,
+                  onReorder: (oldItemIndex, newItemIndex) {
+                    if (oldItemIndex == newItemIndex) {
+                      return;
+                    }
 
-                  todosBloc.add(TodosItemReordered(
-                      oldItemIndex, newItemIndex, widget.index, widget.index));
-                }),
-            alignment: Alignment.topLeft,
+                    // These two lines are workarounds for onReorder behaviour
+                    // Thanks to https://stackoverflow.com/a/54164333
+                    if (newItemIndex > widget.todos.length) {
+                      newItemIndex = widget.todos.length;
+                    }
+                    if (oldItemIndex < newItemIndex) newItemIndex--;
+
+                    todosBloc.add(TodosItemReordered(oldItemIndex, newItemIndex,
+                        widget.index, widget.index));
+                  }),
+              alignment: Alignment.topLeft,
+            ),
           )
         ],
       ),

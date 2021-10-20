@@ -1,7 +1,10 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todo_flutter_uwp/bloc/todos_bloc.dart';
 import 'package:todo_flutter_uwp/colors.dart';
+import 'package:todo_flutter_uwp/repository/todo_repository.dart';
 import 'package:todo_flutter_uwp/widgets/working_zone.dart';
 
 void main() {
@@ -70,7 +73,12 @@ class WindowContainer extends StatelessWidget {
                   const WindowButtons(),
                 ]),
               )),
-              const WorkingZone(),
+              RepositoryProvider(
+                  create: (_) => TodoRepository(),
+                  child: BlocProvider(
+                      create: (context) => TodosBloc(
+                          RepositoryProvider.of<TodoRepository>(context)),
+                      child: const WorkingZone())),
             ])));
   }
 }

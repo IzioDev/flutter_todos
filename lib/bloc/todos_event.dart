@@ -9,6 +9,8 @@ class TodosLoaded extends TodosEvent {
   TodosLoaded(this.todoLists);
 }
 
+class TodosReloadRequested extends TodosEvent {}
+
 class TodosItemReordered extends TodosEvent {
   final int oldItemIndex;
   final int newItemIndex;
