@@ -14,10 +14,14 @@ class WorkingZone extends StatefulWidget {
 }
 
 class _WorkingZoneState extends State<WorkingZone> {
-  List<Widget> buildTodoLists(List<TodoList> todoLists,
-      TodoRepository todoRepository, TodosBloc todosBloc) {
+  List<Widget> buildTodoLists(
+      TodosState state, TodoRepository todoRepository, TodosBloc todosBloc) {
+    if (state is! TodosInitial) {
+      return [];
+    }
+
     var index = -1;
-    return todoLists.map((todoList) {
+    return state.todoLists.map((todoList) {
       index++;
 
       final todos = todoList.todos;
@@ -45,12 +49,10 @@ class _WorkingZoneState extends State<WorkingZone> {
         height: MediaQuery.of(context).size.height - 80,
         child: BlocBuilder<TodosBloc, TodosState>(
           builder: (context, state) {
-            print('TodosState changed ? ${state}');
             return ListView(
               scrollDirection: Axis.horizontal,
               shrinkWrap: true,
-              children:
-                  buildTodoLists(state.todoLists, todoRepository, todosBloc),
+              children: buildTodoLists(state, todoRepository, todosBloc),
             );
           },
         ));

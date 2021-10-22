@@ -2,14 +2,17 @@ part of 'todos_bloc.dart';
 
 @immutable
 abstract class TodosState extends Equatable {
-  final List<TodoList> todoLists;
+  const TodosState();
 
-  const TodosState(this.todoLists);
+  @override
+  List<Object> get props => [];
 }
 
 class TodosInitial extends TodosState {
-  const TodosInitial(List<TodoList> todoLists) : super(todoLists);
+  final List<TodoList> todoLists;
+
+  const TodosInitial(this.todoLists);
 
   @override
-  List<Object?> get props => [todoLists];
+  List<Object> get props => [todoLists];
 }

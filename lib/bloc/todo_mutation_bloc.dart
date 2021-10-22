@@ -33,9 +33,10 @@ class TodoMutationBloc extends Bloc<TodoMutationEvent, TodoMutationState> {
       }
 
       if (event is TodoMutationRequested) {
-        await this._todoRepository.addTodo(0, Todo(id: -1, title: event.title));
+        await _todoRepository.addTodo(0, Todo(id: -1, title: event.title));
         todosBloc.add(TodosReloadRequested());
-        print("added TodosReloadRequested");
+
+        emit(TodoMutationInitial());
       }
     });
   }

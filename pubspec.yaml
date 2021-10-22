@@ -30,6 +30,8 @@ dependencies:
   flutter:
     sdk: flutter
 
+  context_menus: ^0.1.0
+
   provider: ^6.0.1
 
   equatable: ^2.0.3

@@ -27,7 +27,7 @@ class TodoRepository {
   }
 
   Future<List<TodoList>> getTodos() async {
-    return List.from(todoLists);
+    return List.from(todoLists.map((e) => e.copyWith()));
   }
 
   Future<List<TodoList>> reorderLists(
@@ -51,6 +51,6 @@ class TodoRepository {
 
   Future<void> addTodo(int listIndex, Todo todo) async {
     TodoList todoList = todoLists[listIndex];
-    todoList.todos.add(todo);
+    todoList.todos.insert(0, todo);
   }
 }

@@ -23,8 +23,9 @@ class _TodoCardEditableState extends State<TodoCardEditable> {
       focusNode: focusNode
         ..addListener(() {
           if (!focusNode.hasFocus) {
-            // when lost focus, we create the card.
-            // i.e. asking mutation to create a new card.
+            if (controller.value.text == "") {
+              return todoMutationBloc.add(TodoMutationCanceled());
+            }
             todoMutationBloc.add(TodoMutationRequested(controller.value.text));
           }
         }),

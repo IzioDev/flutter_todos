@@ -6,9 +6,11 @@ import 'package:todo_flutter_uwp/bloc/todos_bloc.dart';
 import 'package:todo_flutter_uwp/colors.dart';
 import 'package:todo_flutter_uwp/repository/todo_repository.dart';
 import 'package:todo_flutter_uwp/widgets/working_zone.dart';
+import 'package:context_menus/context_menus.dart';
 
 void main() {
   runApp(const MyApp());
+
   doWhenWindowReady(() {
     final win = appWindow;
     const initialSize = Size(1200, 800);
@@ -36,14 +38,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        scrollBehavior: MyCustomScrollBehavior(),
-        debugShowCheckedModeBanner: false,
-        home: Scaffold(
-            body: WindowBorder(
-                color: kBackgroundAccent,
-                width: 1,
-                child: Row(children: const [WindowContainer()]))));
+    return ContextMenuOverlay(
+        child: MaterialApp(
+            scrollBehavior: MyCustomScrollBehavior(),
+            debugShowCheckedModeBanner: false,
+            home: Scaffold(
+                body: WindowBorder(
+                    color: kBackgroundAccent,
+                    width: 1,
+                    child: Row(children: const [WindowContainer()])))));
   }
 }
 

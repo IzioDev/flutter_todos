@@ -7,7 +7,10 @@ class TodoCard extends StatefulWidget {
   final int index;
   final String title;
 
-  const TodoCard({Key? key, required this.index, required this.title})
+  bool isContextualMenuOpened = false;
+  TapUpDetails? tapUpDetails;
+
+  TodoCard({Key? key, required this.index, required this.title})
       : super(key: key);
 
   @override
@@ -24,29 +27,40 @@ class _TodoCardState extends State<TodoCard> {
   Widget build(BuildContext context) {
     return ConstrainedBox(
         constraints: const BoxConstraints(minWidth: double.infinity),
-        child: Listener(
-          onPointerDown: (PointerDownEvent event) {
-            final TodoReorderableListState? list =
-                TodoReorderableList.maybeOf(context);
-            list?.startItemDragReorder(
-              index: widget.index,
-              event: event,
-              recognizer: createRecognizer(),
-            );
-          },
-          child: Card(
-            margin: const EdgeInsets.only(top: 10),
-            shadowColor: Colors.black,
-            color: kBackground,
-            elevation: 2,
-            child: Container(
-              padding: EdgeInsets.all(8),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(widget.title, style: TextStyle(color: Colors.white))
-                ],
+        child: MouseRegion(
+          cursor: SystemMouseCursors.click,
+          child: GestureDetector(
+            onSecondaryTapUp: (tapUpDetails) {
+              setState(() {
+                widget.tapUpDetails = tapUpDetails;
+                widget.isContextualMenuOpened = true;
+              });
+            },
+            child: Listener(
+              onPointerDown: (PointerDownEvent event) {
+                final TodoReorderableListState? list =
+                    TodoReorderableList.maybeOf(context);
+                list?.startItemDragReorder(
+                  index: widget.index,
+                  event: event,
+                  recognizer: createRecognizer(),
+                );
+              },
+              child: Card(
+                margin: const EdgeInsets.only(top: 10),
+                shadowColor: Colors.black,
+                color: kBackground,
+                elevation: 2,
+                child: Container(
+                  padding: EdgeInsets.all(8),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(widget.title, style: TextStyle(color: Colors.white))
+                    ],
+                  ),
+                ),
               ),
             ),
           ),

@@ -7,6 +7,10 @@ class TodoList extends Equatable {
 
   const TodoList(this.category, this.todos);
 
+  TodoList copyWith([String? category, List<Todo>? todos]) {
+    return TodoList(category ?? this.category, todos ?? this.todos.map((e) => e.copyWith()).toList());
+  }
+
   @override
   List<Object?> get props => [category, todos];
 }
