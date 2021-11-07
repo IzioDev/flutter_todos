@@ -122,16 +122,16 @@ class _TodosListState extends State<TodosList> {
                       ),
                   itemCount: widget.todos.length,
                   onReorder: (oldItemIndex, newItemIndex) {
-                    if (oldItemIndex == newItemIndex) {
-                      return;
-                    }
-
                     // These two lines are workarounds for onReorder behaviour
                     // Thanks to https://stackoverflow.com/a/54164333
                     if (newItemIndex > widget.todos.length) {
                       newItemIndex = widget.todos.length;
                     }
                     if (oldItemIndex < newItemIndex) newItemIndex--;
+
+                    if (oldItemIndex == newItemIndex) {
+                      return;
+                    }
 
                     todosBloc.add(TodosItemReordered(oldItemIndex, newItemIndex,
                         widget.index, widget.index));

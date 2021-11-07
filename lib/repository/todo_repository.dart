@@ -42,7 +42,7 @@ class TodoRepository {
   Future<List<TodoList>> reorderItems(int oldListIndex, int newListIndex,
       int oldItemIndex, int newItemIndex) async {
     print(
-        'Reordering list $oldListIndex:$newListIndex.\n\tOld Position $oldItemIndex\n\tNewPosition $newItemIndex');
+        'Reordering Items $oldListIndex:$newListIndex.\n\tOld Position $oldItemIndex\n\tNewPosition $newItemIndex');
     TodoList todoList = todoLists[oldListIndex];
     Todo item = todoList.todos[oldItemIndex];
     todoList.todos.removeAt(oldItemIndex);
