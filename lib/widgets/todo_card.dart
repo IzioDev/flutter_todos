@@ -1,3 +1,4 @@
+import 'package:context_menus/context_menus.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:todo_flutter_uwp/colors.dart';
@@ -7,7 +8,6 @@ class TodoCard extends StatefulWidget {
   final int index;
   final String title;
 
-  bool isContextualMenuOpened = false;
   TapUpDetails? tapUpDetails;
 
   TodoCard({Key? key, required this.index, required this.title})
@@ -33,7 +33,8 @@ class _TodoCardState extends State<TodoCard> {
             onSecondaryTapUp: (tapUpDetails) {
               setState(() {
                 widget.tapUpDetails = tapUpDetails;
-                widget.isContextualMenuOpened = true;
+                // ContextMenuOverlay.of(context).show(
+                //     Container(width: 100, height: 100, color: Colors.red));
               });
             },
             child: Listener(

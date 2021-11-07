@@ -27,6 +27,7 @@ class TodoRepository {
   }
 
   Future<List<TodoList>> getTodos() async {
+    // deep copy element
     return List.from(todoLists.map((e) => e.copyWith()));
   }
 
@@ -35,7 +36,7 @@ class TodoRepository {
     TodoList todoList = todoLists[oldListIndex];
     todoLists.removeAt(oldListIndex);
     todoLists.insert(newListIndex, todoList);
-    return todoLists;
+    return getTodos();
   }
 
   Future<List<TodoList>> reorderItems(int oldListIndex, int newListIndex,
@@ -46,7 +47,7 @@ class TodoRepository {
     Todo item = todoList.todos[oldItemIndex];
     todoList.todos.removeAt(oldItemIndex);
     todoList.todos.insert(newItemIndex, item);
-    return todoLists;
+    return getTodos();
   }
 
   Future<void> addTodo(int listIndex, Todo todo) async {

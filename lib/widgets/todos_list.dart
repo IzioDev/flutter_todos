@@ -94,8 +94,8 @@ class _TodosListState extends State<TodosList> {
                   color: Colors.green,
                 ),
                 onPressed: () {
-                  todoMutationBloc
-                      .add(TodoMutationInitiated(mutation: Mutation.insert));
+                  todoMutationBloc.add(TodoMutationInitiated(
+                      mutation: Mutation.insert, listIndex: widget.index));
                 },
               )
             ],

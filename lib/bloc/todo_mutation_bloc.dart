@@ -25,7 +25,8 @@ class TodoMutationBloc extends Bloc<TodoMutationEvent, TodoMutationState> {
           todo = event.todo!;
         }
 
-        emit(TodoMutationInitialized(todo: todo, mutation: event.mutation));
+        emit(TodoMutationInitialized(
+            listIndex: event.listIndex, todo: todo, mutation: event.mutation));
       }
 
       if (event is TodoMutationCanceled) {
@@ -33,16 +34,24 @@ class TodoMutationBloc extends Bloc<TodoMutationEvent, TodoMutationState> {
       }
 
       if (event is TodoMutationRequested) {
-        await _todoRepository.addTodo(0, Todo(id: -1, title: event.title));
-        todosBloc.add(TodosReloadRequested());
+        // @TODO: treat other cases
+        // where a todo mutation occured before an initalization ?
+        print("TodoMutationRequested with state: ${state.toString()}");
 
-        emit(TodoMutationInitial());
+        final _state = state;
+        if (_state is TodoMutationInitialized) {
+          print("TodoMutationRequested for listIndex: ${_state.listIndex}");
+          await _todoRepository.addTodo(
+              _state.listIndex, Todo(id: -1, title: event.title));
+          todosBloc.add(TodosReloadRequested());
+
+          emit(TodoMutationInitial());
+        }
       }
     });
   }
 
   bool isEditing() {
-    print(state);
     return state is TodoMutationInitialized;
   }
 }

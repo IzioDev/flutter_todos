@@ -26,7 +26,7 @@ class _TodoCardEditableState extends State<TodoCardEditable> {
             if (controller.value.text == "") {
               return todoMutationBloc.add(TodoMutationCanceled());
             }
-            todoMutationBloc.add(TodoMutationRequested(controller.value.text));
+            todoMutationBloc.add(TodoMutationRequested(title: controller.value.text));
           }
         }),
       maxLines: null,

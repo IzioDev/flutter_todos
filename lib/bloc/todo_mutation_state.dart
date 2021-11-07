@@ -21,7 +21,10 @@ abstract class TodoMutationStateInitialized extends TodoMutationState {
 class TodoMutationInitial extends TodoMutationState {}
 
 class TodoMutationInitialized extends TodoMutationStateInitialized {
-  const TodoMutationInitialized({required todo, mutation = Mutation.insert})
+  final int listIndex;
+
+  const TodoMutationInitialized(
+      {required this.listIndex, required todo, mutation = Mutation.insert})
       : super(todo: todo, mutation: mutation);
 
   @override

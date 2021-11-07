@@ -9,9 +9,11 @@ abstract class TodoMutationEvent extends Equatable {
 
 class TodoMutationInitiated extends TodoMutationEvent {
   final Mutation mutation;
+  final int listIndex;
   final Todo? todo;
 
-  const TodoMutationInitiated({required this.mutation, this.todo});
+  const TodoMutationInitiated(
+      {required this.mutation, required this.listIndex, this.todo});
 
   @override
   List<Object> get props => [];
@@ -22,7 +24,7 @@ class TodoMutationCanceled extends TodoMutationEvent {}
 class TodoMutationRequested extends TodoMutationEvent {
   final String title;
 
-  const TodoMutationRequested(this.title);
+  const TodoMutationRequested({required this.title});
 
   @override
   List<Object> get props => [title];

@@ -38,15 +38,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ContextMenuOverlay(
-        child: MaterialApp(
+    return /*ContextMenuOverlay(
+        child: */
+        MaterialApp(
             scrollBehavior: MyCustomScrollBehavior(),
             debugShowCheckedModeBanner: false,
             home: Scaffold(
                 body: WindowBorder(
                     color: kBackgroundAccent,
                     width: 1,
-                    child: Row(children: const [WindowContainer()])))));
+                    child: Row(children: const [WindowContainer()])))) /*)*/;
   }
 }
 
